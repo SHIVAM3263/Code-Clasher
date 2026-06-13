@@ -1,0 +1,17 @@
+myenv/
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+
+# Environment files — never commit secrets
+.env
+.env.local
+
+# Django build artifacts
+staticfiles/
+media/
+db.sqlite3
+
+# Vite build output
+dist/
