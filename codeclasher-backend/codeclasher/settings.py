@@ -1,7 +1,6 @@
 """
 CodeClasher Django Settings
 """
-import os
 from pathlib import Path
 from decouple import config
 from datetime import timedelta
@@ -63,7 +62,8 @@ TEMPLATES = [
     },
 ]
 
-# ASGI for WebSockets
+# ASGI for WebSockets (Daphne uses this; WSGI_APPLICATION satisfies Nixpacks detection)
+WSGI_APPLICATION = 'codeclasher.wsgi.application'
 ASGI_APPLICATION = 'codeclasher.asgi.application'
 
 # Database — PostgreSQL in production, SQLite in dev
