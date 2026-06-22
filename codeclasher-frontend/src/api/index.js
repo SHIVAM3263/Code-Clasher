@@ -1,7 +1,11 @@
 import axios from 'axios'
 
+// In production set VITE_API_URL to the backend origin (e.g. https://code-clasher-production.up.railway.app).
+// In dev it's empty, so requests stay relative ('/api') and use the Vite proxy.
+export const API_BASE = import.meta.env.VITE_API_URL || ''
+
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: `${API_BASE}/api`,
   headers: { 'Content-Type': 'application/json' },
 })
 
@@ -21,7 +25,7 @@ api.interceptors.response.use(
       original._retry = true
       try {
         const refresh = localStorage.getItem('refresh_token')
-        const { data } = await axios.post('/api/auth/refresh/', { refresh })
+        const { data } = await axios.post(`${API_BASE}/api/auth/refresh/`, { refresh })
         localStorage.setItem('access_token', data.access)
         original.headers.Authorization = `Bearer ${data.access}`
         return api(original)

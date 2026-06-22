@@ -168,7 +168,12 @@ export default function Battle() {
   // ── WebSocket ─────────────────────────────────────────────────────────────
   useEffect(() => {
     const token = localStorage.getItem("access_token") || ""
-    const ws = new WebSocket(`ws://${window.location.hostname}:8000/ws/battle/${roomCode}/?token=${token}`)
+    // Prod: derive from VITE_API_URL (https -> wss). Dev: fall back to the local backend.
+    const apiBase = import.meta.env.VITE_API_URL
+    const wsBase = apiBase
+      ? apiBase.replace(/^http/, 'ws')
+      : `ws://${window.location.hostname}:8000`
+    const ws = new WebSocket(`${wsBase}/ws/battle/${roomCode}/?token=${token}`)
     wsRef.current = ws
 
     ws.onmessage = (e) => {
