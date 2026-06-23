@@ -9,8 +9,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-change-this-in-production-use-env-var')
 DEBUG = config('DEBUG', default=True, cast=bool)
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1').split(',')
-CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', default='http://localhost:5173').split(',')
+
+
+def _csv(name, default):
+    """Comma-separated env var -> list, tolerant of spaces/trailing slashes/empties."""
+    return [item.strip().rstrip('/') for item in config(name, default=default).split(',') if item.strip()]
+
+
+ALLOWED_HOSTS = [h.strip() for h in config('ALLOWED_HOSTS', default='localhost,127.0.0.1').split(',') if h.strip()]
+CSRF_TRUSTED_ORIGINS = _csv('CSRF_TRUSTED_ORIGINS', 'http://localhost:5173')
 
 INSTALLED_APPS = [
     'daphne',
@@ -139,10 +146,10 @@ SIMPLE_JWT = {
 }
 
 # CORS
-CORS_ALLOWED_ORIGINS = config(
+CORS_ALLOWED_ORIGINS = _csv(
     'CORS_ALLOWED_ORIGINS',
-    default='http://localhost:5173,http://localhost:3000,http://127.0.0.1:5173'
-).split(',')
+    'http://localhost:5173,http://localhost:3000,http://127.0.0.1:5173'
+)
 CORS_ALLOW_CREDENTIALS = True
 
 # Game Constants
